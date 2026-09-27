@@ -1,0 +1,32 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv/
+
+# Settings
+.vscode/
+
+# Environment files
+.env
+
+# PowerShell script files
+*.ps1
+
+# Log files
+logs/
+*.log
+*.log*
+
+# JSON files
+*.json
+
+# System files
+.DS_Store
+Thumbs.db
+*.db
