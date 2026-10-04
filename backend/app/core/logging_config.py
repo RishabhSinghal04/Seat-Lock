@@ -9,34 +9,32 @@ _FILE_NAME: Final[str] = "app.log"
 _FILE_DIR: Final[str] = str(Path(__file__).resolve().parent.parent.parent / "logs")
 _FORMAT: Final[str] = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 _BACKUP_COUNT: Final[int] = 10
-_DEFAULT_NOISY_LOGGERS: Final[frozenset[str]] = frozenset(
-    {
-        "watchfiles",
-        "watchfiles.main",
-        "granian",
-        "granian.access",
-        "aiosqlite",
-        "sqlalchemy.engine",
-        "sqlalchemy.engine.Engine",
-        "sqlalchemy.pool",
-        "sqlalchemy.dialects",
-        "asyncpg",  # PostgreSQL
-        "aiopg",  # another PostgreSQL driver
-        "aiomysql",  # MySQL
-    }
+_DEFAULT_NOISY_LOGGERS: Final[tuple[str, ...]] = (
+    "watchfiles",
+    "watchfiles.main",
+    "granian",
+    "granian.access",
+    "aiosqlite",
+    "sqlalchemy.engine",
+    "sqlalchemy.engine.Engine",
+    "sqlalchemy.pool",
+    "sqlalchemy.dialects",
+    "asyncpg",  # PostgreSQL
+    "aiopg",  # another PostgreSQL driver
+    "aiomysql",  # MySQL
 )
 
 
 def setup_logging(
     debug: bool = False,
     log_format: str = _FORMAT,
-    noisy_loggers: frozenset[str] | None = None,
+    noisy_loggers: tuple[str, ...] | None = None,
 ) -> None:
     _ensure_log_directory()
+    log_level: int = logging.DEBUG if debug else logging.INFO
     log_handler: list[StreamHandler[TextIO] | TimedRotatingFileHandler] = (
         _setup_handler(log_format)
     )
-    log_level: int = logging.DEBUG if debug else logging.INFO
     basicConfig(level=log_level, handlers=log_handler, force=True)
     _silence_noisy_loggers(
         noisy_loggers if noisy_loggers is not None else _DEFAULT_NOISY_LOGGERS
@@ -68,7 +66,7 @@ def _setup_handler(
     return [file_handler, console_handler]
 
 
-def _silence_noisy_loggers(noisy_loggers: frozenset[str]) -> None:
+def _silence_noisy_loggers(noisy_loggers: tuple[str, ...]) -> None:
     for name in noisy_loggers:
         _logger: logging.Logger = logging.getLogger(name)
         _logger.setLevel(logging.WARNING)
