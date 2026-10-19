@@ -1,7 +1,7 @@
 import logging
-import os
 from logging import StreamHandler, basicConfig
 from logging.handlers import TimedRotatingFileHandler
+import os
 from pathlib import Path
 from typing import Final, TextIO
 
