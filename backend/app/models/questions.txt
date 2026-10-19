@@ -1,0 +1,9 @@
+what is server default and why use it?
+what is native_enum?
+what's back_populate, cascade, passive_delete, ondelete?
+what is table_args, unique_constants, check constraints and all that stuff?
+how these relationships works and why we need them to work like this way?
+how do I learn them and what I have to and how much I have to learn?
+why seats columns, why list instead of tuple or something more efficient?
+why no mapped_column for starts_at?
+what is organizer id and on what does it depend?
