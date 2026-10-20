@@ -41,13 +41,16 @@ class Reservation(Base):
     created_at: Mapped[CreatedAt]
 
     seat: Mapped[Seat] = relationship(back_populates="reservation")
-    user: Mapped[User] = relationship(back_populates="reservation")
+    user: Mapped[User] = relationship(back_populates="reservations")
 
-    __table_args__: tuple[CheckConstraint, CheckConstraint] = (
+    __table_args__: tuple[CheckConstraint, ...] = (
         CheckConstraint(
             (status == ReservationStatus.CONFIRMED) | (payment_reference.is_not(None)),
-            # "status <> 'CONFIRMED' OR payment_reference IS NOT NULL",
             name="confirmed_has_payment",
+        ),
+        CheckConstraint(
+            (status == ReservationStatus.HELD) | (expires_at.is_not(None)),
+            name="held_has_expiry",
         ),
         CheckConstraint(amount_paid >= 0, name="amount_non_negative"),
     )

@@ -25,4 +25,3 @@ class User(Base):
     created_at: Mapped[CreatedAt]
 
     reservations: Mapped[list[Reservation]] = relationship(back_populates="user")
-# if user can organize an event or events then why not create a relationship with event?

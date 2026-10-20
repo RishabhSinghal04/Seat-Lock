@@ -8,8 +8,8 @@ from sqlalchemy import CheckConstraint, ForeignKey, Numeric, String, UniqueConst
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.constants import MONEY_PRECISION, MONEY_SCALE
-from app.models import Event
 from app.models.base import Base, UuidPk
+from app.models.event import Event
 
 if TYPE_CHECKING:
     from app.models.reservation import Reservation
@@ -26,7 +26,7 @@ class Seat(Base):
     price: Mapped[Decimal] = mapped_column(Numeric(MONEY_PRECISION, MONEY_SCALE))
 
     event: Mapped[Event] = relationship(back_populates="seats")
-    reservation: Mapped[Reservation | None] = relationship(back_populates="seats")
+    reservation: Mapped[Reservation | None] = relationship(back_populates="seat")
 
     __table_args__: tuple[UniqueConstraint, CheckConstraint] = (
         UniqueConstraint(event_id, seat_number),
