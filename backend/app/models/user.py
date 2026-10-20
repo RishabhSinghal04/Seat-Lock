@@ -1,36 +1,28 @@
 from __future__ import annotations
 
-import uuid
-from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import String, false, func
+from sqlalchemy import String, false
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core import Base
 from app.core.constants import MAX_EMAIL_LENGTH
+from app.models.base import Base, CreatedAt, UuidPk
 
 if TYPE_CHECKING:
-    from app.models.booking import Booking
-    from app.models.hold import Hold
+    from app.models.reservation import Reservation
 
 
 class User(Base):
     __tablename__ = "users"
 
-    user_id: Mapped[uuid.UUID] = mapped_column(default=uuid.uuid7, primary_key=True)
+    user_id: Mapped[UuidPk]
     email: Mapped[str] = mapped_column(String(MAX_EMAIL_LENGTH), unique=True)
     password_hash: Mapped[str] = mapped_column(String(256))
     is_verified: Mapped[bool] = mapped_column(default=False, server_default=false())
-    pending_email: Mapped[str | None] = mapped_column(String(MAX_EMAIL_LENGTH))
-    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
-
-    holds: Mapped[list[Hold]] = relationship(
-        back_populates="user", cascade="all, delete-orphan", passive_deletes=True
+    pending_email: Mapped[str | None] = mapped_column(
+        String(MAX_EMAIL_LENGTH), unique=True
     )
-    bookings: Mapped[list[Booking]] = relationship(
-        back_populates="user", passive_deletes=True
-    )
+    created_at: Mapped[CreatedAt]
 
-    def __repr__(self) -> str:
-        return f"<User(user_id={self.user_id})>"
+    reservations: Mapped[list[Reservation]] = relationship(back_populates="user")
+# if user can organize an event or events then why not create a relationship with event?
