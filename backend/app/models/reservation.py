@@ -45,11 +45,11 @@ class Reservation(Base):
 
     __table_args__: tuple[CheckConstraint, ...] = (
         CheckConstraint(
-            (status == ReservationStatus.CONFIRMED) | (payment_reference.is_not(None)),
+            (status != ReservationStatus.CONFIRMED) | (payment_reference.is_not(None)),
             name="confirmed_has_payment",
         ),
         CheckConstraint(
-            (status == ReservationStatus.HELD) | (expires_at.is_not(None)),
+            (status != ReservationStatus.HELD) | (expires_at.is_not(None)),
             name="held_has_expiry",
         ),
         CheckConstraint(amount_paid >= 0, name="amount_non_negative"),
