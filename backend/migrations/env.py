@@ -66,8 +66,9 @@ def do_run_migrations(connection: Connection) -> None:
         target_metadata=target_metadata,
         compare_type=True,  # Detect column type changes
         compare_server_default=True,  # Detect changes in server defaults
-        compare_indexes=True,  # Detect index changes
-        compare_unique_constraints=True,  # Detect unique constraint changes
+        check_constraints=True,
+        # compare_indexes=True,  # Detect index changes
+        # compare_unique_constraints=True,  # Detect unique constraint changes
     )
     with context.begin_transaction():
         context.run_migrations()
@@ -83,7 +84,7 @@ async def run_migrations_online() -> None:
     engine: AsyncEngine = create_async_engine(url=get_url())
     async with engine.begin() as conn:
         await conn.run_sync(do_run_migrations)
-        await engine.dispose()
+    await engine.dispose()
 
     # connectable = engine_from_config(
     #     config.get_section(config.config_ini_section, {}),
