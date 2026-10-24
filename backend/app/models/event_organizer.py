@@ -15,5 +15,5 @@ class EventOrganizer(Base):
         ForeignKey(Event.event_id, ondelete="CASCADE"), primary_key=True
     )
     user_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey(User.user_id, ondelete="RESTRICT"), primary_key=True
+        ForeignKey(User.user_id, ondelete="RESTRICT"), primary_key=True, index=True
     )

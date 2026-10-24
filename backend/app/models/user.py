@@ -9,6 +9,7 @@ from app.core.constants import MAX_EMAIL_LENGTH
 from app.models.base import Base, CreatedAt, UuidPk
 
 if TYPE_CHECKING:
+    from app.models.event import Event
     from app.models.reservation import Reservation
 
 
@@ -24,4 +25,9 @@ class User(Base):
     )
     created_at: Mapped[CreatedAt]
 
-    reservations: Mapped[list[Reservation]] = relationship(back_populates="user")
+    organized_events: Mapped[list[Event]] = relationship(
+        secondary="event_organizer", back_populates="organizers", passive_deletes=True
+    )
+    reservations: Mapped[list[Reservation]] = relationship(
+        back_populates="user", passive_deletes="all"
+    )

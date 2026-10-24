@@ -4,7 +4,14 @@ import uuid
 from decimal import Decimal
 from typing import TYPE_CHECKING
 
-from sqlalchemy import CheckConstraint, ForeignKey, Numeric, String, UniqueConstraint
+from sqlalchemy import (
+    CheckConstraint,
+    Constraint,
+    ForeignKey,
+    Numeric,
+    String,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.constants import MONEY_PRECISION, MONEY_SCALE
@@ -12,7 +19,7 @@ from app.models.base import Base, UuidPk
 from app.models.event import Event
 
 if TYPE_CHECKING:
-    from app.models.reservation import Reservation
+    from app.models.reservation_seat import ReservationSeat
 
 
 class Seat(Base):
@@ -26,9 +33,11 @@ class Seat(Base):
     price: Mapped[Decimal] = mapped_column(Numeric(MONEY_PRECISION, MONEY_SCALE))
 
     event: Mapped[Event] = relationship(back_populates="seats")
-    reservation: Mapped[Reservation | None] = relationship(back_populates="seat")
+    reservation_seats: Mapped[list[ReservationSeat]] = relationship(
+        back_populates="seat", passive_deletes="all"
+    )
 
-    __table_args__: tuple[UniqueConstraint, CheckConstraint] = (
-        UniqueConstraint(event_id, seat_number),
+    __table_args__: tuple[Constraint, ...] = (
         CheckConstraint(price >= 0, name="price_non_negative"),
+        UniqueConstraint(event_id, seat_number),
     )

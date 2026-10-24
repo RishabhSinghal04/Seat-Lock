@@ -1,5 +1,9 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.constants import (
     MAX_CITY_LENGTH,
@@ -12,6 +16,9 @@ from app.core.constants import (
     MAX_VENUE_LENGTH,
 )
 from app.models.base import Base, UuidPk
+
+if TYPE_CHECKING:
+    from app.models.event import Event
 
 
 class Venue(Base):
@@ -26,3 +33,7 @@ class Venue(Base):
     postal_code: Mapped[str | None] = mapped_column(String(MAX_POSTAL_CODE_LENGTH))
     country_code: Mapped[str] = mapped_column(String(MAX_COUNTRY_CODE_LENGTH))
     timezone: Mapped[str] = mapped_column(String(MAX_TIMEZONE_LENGTH))
+
+    events: Mapped[list[Event]] = relationship(
+        back_populates="venue", passive_deletes="all"
+    )
