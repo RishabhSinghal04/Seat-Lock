@@ -14,6 +14,12 @@ class EventStatus(StrEnum):
     COMPLETED = "completed"
 
 
+class EventFormat(StrEnum):
+    IN_PERSON = "in_person"
+    VIRTUAL = "virtual"
+    HYBRID = "hybrid"
+
+
 class RefundStatus(StrEnum):
     PENDING = "pending"
     COMPLETED = "completed"
