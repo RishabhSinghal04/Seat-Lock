@@ -9,7 +9,7 @@ from app.models.user import User
 
 
 class EventOrganizer(Base):
-    __tablename__ = "event_organizer"
+    __tablename__ = "event_organizers"
 
     event_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey(Event.event_id, ondelete="CASCADE"), primary_key=True

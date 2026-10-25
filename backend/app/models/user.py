@@ -26,7 +26,7 @@ class User(Base):
     created_at: Mapped[CreatedAt]
 
     organized_events: Mapped[list[Event]] = relationship(
-        secondary="event_organizer", back_populates="organizers", passive_deletes=True
+        secondary="event_organizers", back_populates="organizers", passive_deletes=True
     )
     reservations: Mapped[list[Reservation]] = relationship(
         back_populates="user", passive_deletes="all"
