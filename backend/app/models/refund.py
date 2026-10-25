@@ -40,5 +40,5 @@ class Refund(Base):
     reservation: Mapped[Reservation] = relationship(back_populates="refunds")
 
     __table_args__: tuple[CheckConstraint] = (
-        CheckConstraint("amount > 0", name="amount_positive"),
+        CheckConstraint(amount > 0, name="amount_positive"),
     )

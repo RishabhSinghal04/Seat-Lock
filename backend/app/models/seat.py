@@ -14,7 +14,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.constants import MONEY_PRECISION, MONEY_SCALE
+from app.core.constants import MAX_SEAT_NUMBER_LENGTH, MONEY_PRECISION, MONEY_SCALE
 from app.models.base import Base, UuidPk
 from app.models.event import Event
 
@@ -29,7 +29,7 @@ class Seat(Base):
     event_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey(Event.event_id, ondelete="CASCADE")
     )
-    seat_number: Mapped[str] = mapped_column(String(10))
+    seat_number: Mapped[str] = mapped_column(String(MAX_SEAT_NUMBER_LENGTH))
     price: Mapped[Decimal] = mapped_column(Numeric(MONEY_PRECISION, MONEY_SCALE))
 
     event: Mapped[Event] = relationship(back_populates="seats")

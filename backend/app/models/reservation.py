@@ -16,6 +16,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.constants import (
+    MAX_CURRENCY_LENGTH,
     MAX_PAYMENT_REFERENCE_LENGTH,
     MONEY_PRECISION,
     MONEY_SCALE,
@@ -52,7 +53,7 @@ class Reservation(Base):
     amount_paid: Mapped[Decimal | None] = mapped_column(
         Numeric(MONEY_PRECISION, MONEY_SCALE)
     )
-    currency: Mapped[str] = mapped_column(String(3))
+    currecny: Mapped[str] = mapped_column(String(MAX_CURRENCY_LENGTH))
     created_at: Mapped[CreatedAt]
 
     user: Mapped[User] = relationship(back_populates="reservations")
