@@ -1,12 +1,9 @@
 import uuid
 from datetime import datetime
-from typing import Annotated, ClassVar
+from typing import ClassVar
 
 from sqlalchemy import DateTime, MetaData, func, inspect
-from sqlalchemy.orm import DeclarativeBase, mapped_column
-
-UuidPk = Annotated[uuid.UUID, mapped_column(default=uuid.uuid7, primary_key=True)]
-CreatedAt = Annotated[datetime, mapped_column(server_default=func.now())]
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
 class Base(DeclarativeBase):
@@ -25,3 +22,19 @@ class Base(DeclarativeBase):
 
     def __repr__(self) -> str:
         return f"<{type(self).__name__} {inspect(self).identity}>"
+
+
+class UUIDPrimaryKeyMixin:
+    uid: Mapped[uuid.UUID] = mapped_column("id", default=uuid.uuid7, primary_key=True)
+
+
+class CreatedAtMixin:
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+
+
+class TimestampMixin(CreatedAtMixin):
+    __mapper_args__: ClassVar[dict[str, bool]] = {"eager_defaults": True}
+
+    updated_at: Mapped[datetime] = mapped_column(
+        server_default=func.now(), onupdate=func.now()
+    )
