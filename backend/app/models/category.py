@@ -4,13 +4,12 @@ from sqlalchemy import String, true
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.constants import MAX_CATEGORY_NAME_LENGTH, MAX_CATEGORY_SLUG_LENGTH
-from app.models.base import Base, UuidPk
+from app.models.base import Base, UUIDPrimaryKeyMixin
 
 
-class Category(Base):
+class Category(UUIDPrimaryKeyMixin, Base):
     __tablename__ = "categories"
 
-    category_id: Mapped[UuidPk]
     slug: Mapped[str] = mapped_column(String(MAX_CATEGORY_SLUG_LENGTH), unique=True)
     name: Mapped[str] = mapped_column(String(MAX_CATEGORY_NAME_LENGTH))
     # Retire a category with is_active=False. Never delete old events, keep it.

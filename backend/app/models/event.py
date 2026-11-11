@@ -14,7 +14,7 @@ from app.core.constants import (
     MAX_TIMEZONE_LENGTH,
 )
 from app.core.enums import EventFormat, EventStatus
-from app.models.base import Base, CreatedAt, UuidPk
+from app.models.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
 from app.models.venue import Venue
 
 if TYPE_CHECKING:
@@ -24,13 +24,12 @@ if TYPE_CHECKING:
     from app.models.user import User
 
 
-class Event(Base):
+class Event(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __tablename__ = "events"
 
-    event_id: Mapped[UuidPk]
     event_name: Mapped[str] = mapped_column(String(MAX_EVENT_NAME_LENGTH))
     venue_id: Mapped[uuid.UUID | None] = mapped_column(
-        ForeignKey(Venue.venue_id, ondelete="RESTRICT"), index=True
+        ForeignKey(Venue.uid, ondelete="RESTRICT"), index=True
     )
     event_format: Mapped[EventFormat] = mapped_column(
         Enum(EventFormat, native_enum=False),
@@ -52,7 +51,6 @@ class Event(Base):
     # Never return this in public responses, only users with a CONFIRMED reservation
     online_url: Mapped[str | None] = mapped_column(String(MAX_ONLINE_URL_LENGTH))
     timezone: Mapped[str] = mapped_column(String(MAX_TIMEZONE_LENGTH))
-    created_at: Mapped[CreatedAt]
 
     venue: Mapped[Venue | None] = relationship(back_populates="events")
     organizers: Mapped[list[User]] = relationship(

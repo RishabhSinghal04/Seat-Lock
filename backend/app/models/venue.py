@@ -15,16 +15,15 @@ from app.core.constants import (
     MAX_TIMEZONE_LENGTH,
     MAX_VENUE_LENGTH,
 )
-from app.models.base import Base, UuidPk
+from app.models.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
     from app.models.event import Event
 
 
-class Venue(Base):
+class Venue(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __tablename__ = "venues"
 
-    venue_id: Mapped[UuidPk]
     name: Mapped[str] = mapped_column(String(MAX_VENUE_LENGTH))
     street: Mapped[str] = mapped_column(String(MAX_STREET_LENGTH))
     locality: Mapped[str | None] = mapped_column(String(MAX_LOCALITY_LENGTH))

@@ -14,10 +14,8 @@ class EventCategory(Base):
     __tablename__ = "event_categories"
 
     event_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey(Event.event_id, ondelete="CASCADE"), primary_key=True
+        ForeignKey(Event.uid, ondelete="CASCADE"), primary_key=True
     )
     category_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey(Category.category_id, ondelete="RESTRICT"),
-        primary_key=True,
-        index=True,
+        ForeignKey(Category.uid, ondelete="RESTRICT"), primary_key=True, index=True
     )
