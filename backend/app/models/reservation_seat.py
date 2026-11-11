@@ -14,10 +14,10 @@ class ReservationSeat(Base):
     __tablename__ = "reservation_seats"
 
     reservation_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey(Reservation.reservation_id, ondelete="RESTRICT"), primary_key=True
+        ForeignKey(Reservation.uid, ondelete="RESTRICT"), primary_key=True
     )
     seat_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey(Seat.seat_id, ondelete="RESTRICT"), primary_key=True
+        ForeignKey(Seat.uid, ondelete="RESTRICT"), primary_key=True
     )
     price: Mapped[Decimal] = mapped_column(Numeric(MONEY_PRECISION, MONEY_SCALE))
     is_active: Mapped[bool] = mapped_column(default=True, server_default=true())

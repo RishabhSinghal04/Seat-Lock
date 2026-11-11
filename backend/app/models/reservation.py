@@ -22,7 +22,7 @@ from app.core.constants import (
     MONEY_SCALE,
 )
 from app.core.enums import ReservationStatus
-from app.models.base import Base, CreatedAt, UuidPk
+from app.models.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
 from app.models.event import Event
 from app.models.user import User
 
@@ -31,15 +31,14 @@ if TYPE_CHECKING:
     from app.models.reservation_seat import ReservationSeat
 
 
-class Reservation(Base):
+class Reservation(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __tablename__ = "reservations"
 
-    reservation_id: Mapped[UuidPk]
     user_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey(User.user_id, ondelete="RESTRICT"), index=True
+        ForeignKey(User.uid, ondelete="RESTRICT"), index=True
     )
     event_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey(Event.event_id, ondelete="RESTRICT"), index=True
+        ForeignKey(Event.uid, ondelete="RESTRICT"), index=True
     )
     status: Mapped[ReservationStatus] = mapped_column(
         Enum(ReservationStatus, native_enum=False),
@@ -53,8 +52,7 @@ class Reservation(Base):
     amount_paid: Mapped[Decimal | None] = mapped_column(
         Numeric(MONEY_PRECISION, MONEY_SCALE)
     )
-    currecny: Mapped[str] = mapped_column(String(MAX_CURRENCY_LENGTH))
-    created_at: Mapped[CreatedAt]
+    currency: Mapped[str] = mapped_column(String(MAX_CURRENCY_LENGTH))
 
     user: Mapped[User] = relationship(back_populates="reservations")
     event: Mapped[Event] = relationship(back_populates="reservations")

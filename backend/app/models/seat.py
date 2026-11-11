@@ -15,19 +15,18 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.constants import MAX_SEAT_NUMBER_LENGTH, MONEY_PRECISION, MONEY_SCALE
-from app.models.base import Base, UuidPk
+from app.models.base import Base, UUIDPrimaryKeyMixin
 from app.models.event import Event
 
 if TYPE_CHECKING:
     from app.models.reservation_seat import ReservationSeat
 
 
-class Seat(Base):
+class Seat(UUIDPrimaryKeyMixin, Base):
     __tablename__ = "seats"
 
-    seat_id: Mapped[UuidPk]
     event_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey(Event.event_id, ondelete="CASCADE")
+        ForeignKey(Event.uid, ondelete="CASCADE")
     )
     seat_number: Mapped[str] = mapped_column(String(MAX_SEAT_NUMBER_LENGTH))
     price: Mapped[Decimal] = mapped_column(Numeric(MONEY_PRECISION, MONEY_SCALE))

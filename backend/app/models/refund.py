@@ -10,20 +10,19 @@ from app.core.constants import (
     MONEY_SCALE,
 )
 from app.core.enums import RefundStatus
-from app.models.base import Base, CreatedAt, UuidPk
+from app.models.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
 from app.models.reservation import Reservation
 from app.models.seat import Seat
 
 
-class Refund(Base):
+class Refund(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __tablename__ = "refunds"
 
-    refund_id: Mapped[UuidPk]
     reservation_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey(Reservation.reservation_id, ondelete="RESTRICT"), index=True
+        ForeignKey(Reservation.uid, ondelete="RESTRICT"), index=True
     )
     seat_id: Mapped[uuid.UUID | None] = mapped_column(
-        ForeignKey(Seat.seat_id, ondelete="RESTRICT")
+        ForeignKey(Seat.uid, ondelete="RESTRICT")
     )
     amount: Mapped[Decimal] = mapped_column(Numeric(MONEY_PRECISION, MONEY_SCALE))
     status: Mapped[RefundStatus] = mapped_column(
@@ -35,7 +34,6 @@ class Refund(Base):
         String(MAX_PAYMENT_REFERENCE_LENGTH), unique=True
     )
     reason: Mapped[str | None] = mapped_column(String(255))
-    created_at: Mapped[CreatedAt]
 
     reservation: Mapped[Reservation] = relationship(back_populates="refunds")
 
