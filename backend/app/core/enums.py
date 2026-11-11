@@ -1,6 +1,12 @@
 from enum import StrEnum
 
 
+class SMTPSecurity(StrEnum):
+    STARTTLS = "starttls"
+    TLS = "tls"
+    PLAINTEXT = "plaintext"
+
+
 class ReservationStatus(StrEnum):
     HELD = "held"
     CONFIRMED = "confirmed"
@@ -24,3 +30,26 @@ class RefundStatus(StrEnum):
     PENDING = "pending"
     COMPLETED = "completed"
     FAILED = "failed"
+
+
+class TokenClaims(StrEnum):
+    JWT_ID = "jti"
+    SUBJECT = "sub"
+    TYPE = "type"
+    ISSUED_AT = "iat"
+    EXPIRY = "exp"
+
+
+class TokenType(StrEnum):
+    ACCESS = "access"
+    REFRESH = "refresh"
+
+
+class AuthScheme(StrEnum):
+    BEARER = "bearer"
+
+
+class TokenPurpose(StrEnum):
+    EMAIL_VERIFICATION = "email_verification"
+    EMAIL_CHANGE = "email_change"
+    PASSWORD_RESET = "password_reset"

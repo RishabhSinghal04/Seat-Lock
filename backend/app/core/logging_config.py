@@ -1,7 +1,7 @@
 import logging
+import os
 from logging import StreamHandler, basicConfig
 from logging.handlers import TimedRotatingFileHandler
-import os
 from pathlib import Path
 from typing import Final, TextIO
 
@@ -17,7 +17,6 @@ _DEFAULT_NOISY_LOGGERS: Final[tuple[str, ...]] = (
     "aiosqlite",
     "sqlalchemy.engine",
     "sqlalchemy.engine.Engine",
-    "sqlalchemy.pool",
     "sqlalchemy.dialects",
     "asyncpg",  # PostgreSQL
     "aiopg",  # another PostgreSQL driver
@@ -68,6 +67,4 @@ def _setup_handler(
 
 def _silence_noisy_loggers(noisy_loggers: tuple[str, ...]) -> None:
     for name in noisy_loggers:
-        _logger: logging.Logger = logging.getLogger(name)
-        _logger.setLevel(logging.WARNING)
-        _logger.propagate = False
+        logging.getLogger(name).setLevel(logging.WARNING)

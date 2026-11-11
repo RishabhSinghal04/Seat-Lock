@@ -18,7 +18,7 @@ class DatabaseSessionManager:
 
     def initialize(self, url: str, echo: bool = False) -> None:
         logger.debug("initializing database engine")
-        self._engine = create_async_engine(url=url, echo=echo, pool_pre_ping=True)
+        self._engine = create_async_engine(url=url, pool_pre_ping=True)
         self._session_maker = async_sessionmaker(
             bind=self._engine, autoflush=False, expire_on_commit=False
         )
@@ -35,19 +35,15 @@ class DatabaseSessionManager:
     async def get_session(self) -> AsyncGenerator[AsyncSession]:
         if self._session_maker is None:
             raise RuntimeError("database engine not initialized")
-        logger.debug("initiating a database session")
-        try:
-            async with self._session_maker() as db:
-                yield db
-        finally:
-            logger.debug("closing the database session")
+        async with self._session_maker() as db:
+            yield db
 
 
 db_manager = DatabaseSessionManager()
 
 
 def init_engine() -> None:
-    db_manager.initialize(url=config.DATABASE_URL, echo=config.DEBUG)
+    db_manager.initialize(url=config.DATABASE_URL.get_secret_value(), echo=config.DEBUG)
 
 
 async def dispose_engine() -> None:
