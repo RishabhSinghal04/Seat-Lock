@@ -14,6 +14,7 @@ wheels/
 
 # Environment files
 .env
+!.env.example
 
 # PowerShell script files
 *.ps1
