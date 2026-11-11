@@ -1,14 +1,13 @@
 import asyncio
 from logging.config import fileConfig
 
+import app.models  # noqa: F401
 from alembic import context
+from app.core import get_config
+from app.models import Base
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.ext.asyncio.engine import AsyncEngine
-
-import app.models  # noqa: F401
-from app.core import get_config
-from app.models import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -32,7 +31,7 @@ target_metadata = Base.metadata
 
 
 def get_url() -> str:
-    return get_config().DATABASE_URL
+    return get_config().DATABASE_URL.get_secret_value()
 
 
 def run_migrations_offline() -> None:
