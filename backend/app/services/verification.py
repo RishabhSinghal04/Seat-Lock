@@ -17,20 +17,10 @@ logger: logging.Logger = logging.getLogger(__name__)
 _DEFAULT_PURPOSE = TokenPurpose.EMAIL_VERIFICATION
 
 
-class CodeNotifier(Protocol):  # the only real boundary: external I/O
+class CodeNotifier(Protocol):
     async def send_code(
         self, *, to: str, code: str, purpose: TokenPurpose, ttl: timedelta
     ) -> None: ...
-
-
-def _email_body(code: str) -> str:
-    minutes = int(CODE_TTL.total_seconds() // 60)
-    unit = "minute" if minutes == 1 else "minutes"
-    return (
-        f"Your authentication code is {code}.\n"
-        f"It expires in {minutes} {unit}.\n"
-        "If you did not request this, ignore this email."
-    )
 
 
 class VerificationService:
@@ -79,7 +69,7 @@ class VerificationService:
         token: OneTimeToken | None = await self._tokens.get_active(
             user.uid, purpose, now
         )
-        if token is None or token.attempts >= MAX_CODE_ATTEMPTS:
+        if token is None or token.attempts >= self._max_attempts:
             logger.info("code rejected: user_id=%s reason=none_or_locked", user.uid)
             raise InvalidCodeError()
         if not self._tokens.matches(token, hash_token(code, self._secret)):
