@@ -5,7 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import app.models.user
 import app.repositories.user
 import app.schemas.base
-from app.core.exceptions.auth import UserAlreadyExistsError
+from app.core.enums import TokenPurpose
+from app.core.exceptions.auth import UserAlreadyExistsError, UserNotVerifiedError
 from app.core.exceptions.user import InvalidCredentialsError
 from app.core.security import DUMMY_HASH, hash_password, verify_password
 from app.models import User
@@ -27,9 +28,7 @@ class AuthService:
         self._verification: VerificationService = verification
         self._session: AsyncSession = session
 
-    async def signup(
-        self, credentials: UserSignup, session: AsyncSession
-    ) -> MessageResponse:
+    async def signup(self, credentials: UserSignup) -> MessageResponse:
         existing: User | None = await self._users.get_by_email(credentials.email)
 
         if existing:
@@ -55,12 +54,20 @@ class AuthService:
         is_password_valid: bool = await verify_password(
             user.password_hash if user else DUMMY_HASH, credentials.password
         )
+        
         if not user or not is_password_valid or not user.is_active:
             logger.info("login failed: user_id=%s", user.uid if user else None)
             raise InvalidCredentialsError()
 
+        if not user.is_verified:
+            logger.info(
+                "login failed, user not verified: user_id=%s",
+                user.uid if user else None,
+            )
+            raise UserNotVerifiedError()
+
         logger.info("login password accepted: user_id=%s", user.uid)
-        await self._verification.issue(user)
+        await self._verification.issue(user, TokenPurpose.LOGIN)
         return MessageResponse(
             message="Your sign-in code has been sent to your registered email address."
         )
