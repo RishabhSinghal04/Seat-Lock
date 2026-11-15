@@ -14,8 +14,10 @@ class _Template:
 
 _TEMPLATES: Final[dict[TokenPurpose, _Template]] = {
     TokenPurpose.EMAIL_VERIFICATION: _Template(
-        subject="Seat Lock - Verify your email",
-        reason="verify your email address",
+        subject="Seat Lock - Verify your email", reason="verify your email address"
+    ),
+    TokenPurpose.LOGIN: _Template(
+        subject="Seat Lock - Your sign-in code", reason="sign in to your account"
     ),
 }
 
