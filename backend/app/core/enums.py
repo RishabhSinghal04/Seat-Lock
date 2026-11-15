@@ -51,5 +51,6 @@ class AuthScheme(StrEnum):
 
 class TokenPurpose(StrEnum):
     EMAIL_VERIFICATION = "email_verification"
+    LOGIN = "login"
     EMAIL_CHANGE = "email_change"
     PASSWORD_RESET = "password_reset"
