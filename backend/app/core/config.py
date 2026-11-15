@@ -94,7 +94,9 @@ class DevelopmentConfig(Config):
 
 
 class ConfigTest(Config):
-    model_config = SettingsConfigDict(env_file=_ENV_FILE_TEST)
+    model_config = SettingsConfigDict(
+        env_file=_ENV_FILE_TEST, env_file_encoding="utf-8", extra="ignore", frozen=True
+    )
     JWT_KEY: SecretStr = SecretStr("test-jwt-key-minimum-32-characters-long")
     DATABASE_URL: SecretStr = Field(..., validation_alias="TEST_DATABASE_URL")
     TESTING: bool = True
@@ -115,7 +117,7 @@ class ProductionConfig(Config):
     @classmethod
     def _reject_wildcard_origin(cls, origin: str) -> str:
         if origin == "*":
-            raise ValueError("wildcard origin is not allowed in production")
+            raise ValueError("Wildcard origin is not allowed in production")
         return origin
 
 
