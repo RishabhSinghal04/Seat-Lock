@@ -6,6 +6,7 @@ from typing import Protocol
 import aiosmtplib
 
 from app.core.config import SMTPConfig
+from app.core.enums import SMTPSecurity
 from app.core.exceptions.email import EmailDeliveryError
 
 logger: logging.Logger = logging.getLogger(__name__)
@@ -60,8 +61,8 @@ class SMTPMailer:
                 port=self._config.SMTP_PORT,
                 username=self._config.SMTP_USER,
                 password=self._config.SMTP_PASSWORD.get_secret_value(),
-                use_tls=self._config.SMTP_SECURITY == "tls",
-                start_tls=self._config.SMTP_SECURITY == "starttls",
+                use_tls=self._config.SMTP_SECURITY == SMTPSecurity.STARTTLS.value,
+                start_tls=self._config.SMTP_SECURITY == SMTPSecurity.TLS.value,
                 timeout=self._config.SMTP_TIMEOUT_SECONDS,
             )
         except (aiosmtplib.SMTPException, OSError) as exc:
