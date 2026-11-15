@@ -1,4 +1,8 @@
-from app.core.exceptions.base import AuthenticationError, ConflictError
+from app.core.exceptions.base import (
+    AuthenticationError,
+    AuthorizationError,
+    ConflictError,
+)
 
 
 class TokenExpiredError(AuthenticationError):
@@ -7,6 +11,10 @@ class TokenExpiredError(AuthenticationError):
 
 class InvalidTokenError(AuthenticationError):
     default_message = "The authentication token is invalid."
+
+
+class UserNotVerifiedError(AuthorizationError):
+    default_message = "Please verify your account before logging in."
 
 
 class UserAlreadyExistsError(ConflictError):
